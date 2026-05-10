@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Тренажёр: -ТСЯ / -ТЬСЯ v2</title>
+  <style>
+    :root{
+      --blue-900:#0f2f5f;
+      --blue-800:#174a8b;
+      --blue-700:#1f66c2;
+      --blue-600:#2d7de0;
+      --blue-500:#4a9af0;
+      --blue-200:#cfe7ff;
+      --blue-100:#eaf5ff;
+      --bg:#f4f9ff;
+      --white:#ffffff;
+      --green:#1f9d55;
+      --green-bg:#e9f8ef;
+      --red:#d93025;
+      --red-bg:#fff0ef;
+      --text:#172033;
+      --shadow:0 18px 45px rgba(20, 78, 150, .18);
+      --radius:28px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(74,154,240,.22), transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(31,102,194,.16), transparent 28%),
+        linear-gradient(135deg, #f7fbff 0%, #eaf5ff 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app{
+      width:min(980px, 100%);
+      min-height:680px;
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(31,102,194,.16);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .decor{
+      position:absolute;
+      border-radius:999px;
+      background:linear-gradient(135deg, rgba(45,125,224,.20), rgba(207,231,255,.45));
+      pointer-events:none;
+    }
+    .decor.one{width:170px;height:170px;right:-50px;top:-55px}
+    .decor.two{width:90px;height:90px;left:28px;bottom:24px}
+    .decor.three{width:44px;height:44px;right:80px;bottom:80px}
+
+    header{
+      background:linear-gradient(135deg, var(--blue-800), var(--blue-600));
+      color:white;
+      padding:30px 34px;
+      position:relative;
+      z-index:1;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 13px;
+      border-radius:999px;
+      background:rgba(255,255,255,.18);
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:.02em;
+      margin-bottom:14px;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(28px, 4vw, 46px);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle{
+      margin:12px 0 0;
+      max-width:720px;
+      font-size:18px;
+      line-height:1.5;
+      opacity:.95;
+    }
+
+    main{
+      padding:34px;
+      position:relative;
+      z-index:1;
+    }
+
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .rule-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin:28px 0;
+    }
+
+    .rule-card{
+      background:var(--blue-100);
+      border:2px solid rgba(45,125,224,.18);
+      border-radius:24px;
+      padding:22px;
+    }
+
+    .rule-card strong{
+      display:block;
+      color:var(--blue-800);
+      font-size:24px;
+      margin-bottom:8px;
+    }
+
+    .rule-card p{
+      margin:0;
+      font-size:17px;
+      line-height:1.45;
+    }
+
+    .example{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:white;
+      font-weight:800;
+      color:var(--blue-900);
+    }
+
+    .start-note{
+      background:#fff;
+      border-left:6px solid var(--blue-600);
+      border-radius:18px;
+      padding:18px 20px;
+      font-size:17px;
+      line-height:1.5;
+      box-shadow:0 10px 24px rgba(31,102,194,.08);
+      margin-bottom:24px;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      font-family:inherit;
+      transition:.18s ease;
+    }
+
+    .primary-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:58px;
+      padding:0 28px;
+      border-radius:18px;
+      background:linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      color:white;
+      font-size:18px;
+      font-weight:900;
+      box-shadow:0 12px 28px rgba(31,102,194,.28);
+    }
+    .primary-btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(31,102,194,.34)}
+    .primary-btn:active{transform:translateY(0)}
+
+    .topline{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:22px;
+    }
+
+    .progress-wrap{flex:1}
+    .progress-text{
+      display:flex;
+      justify-content:space-between;
+      font-weight:800;
+      color:var(--blue-900);
+      margin-bottom:8px;
+    }
+    .bar{
+      height:12px;
+      background:var(--blue-100);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar span{
+      display:block;
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg, var(--blue-700), var(--blue-500));
+      border-radius:999px;
+      transition:.25s ease;
+    }
+
+    .small-btn{
+      padding:11px 16px;
+      border-radius:14px;
+      background:#eef7ff;
+      color:var(--blue-800);
+      font-weight:900;
+      border:1px solid rgba(31,102,194,.16);
+    }
+    .small-btn:hover{background:#dff0ff}
+
+    .task-card{
+      background:white;
+      border-radius:28px;
+      padding:34px;
+      box-shadow:0 16px 35px rgba(31,102,194,.12);
+      border:1px solid rgba(31,102,194,.12);
+      text-align:center;
+    }
+
+    .task-label{
+      display:inline-block;
+      padding:8px 13px;
+      border-radius:999px;
+      background:var(--blue-100);
+      color:var(--blue-800);
+      font-weight:900;
+      margin-bottom:20px;
+    }
+
+    .phrase{
+      font-size:clamp(31px, 6vw, 60px);
+      line-height:1.2;
+      letter-spacing:-.04em;
+      font-weight:900;
+      color:var(--blue-900);
+      margin:12px 0 10px;
+    }
+
+    .blank{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:118px;
+      height:1.02em;
+      border-bottom:8px solid var(--blue-500);
+      vertical-align:baseline;
+      transform:translateY(.08em);
+      transition:.2s ease;
+      padding:0 .10em;
+      margin:0 .04em;
+    }
+
+    .blank.filled{
+      border-bottom-color:transparent;
+      border-radius:18px;
+      background:#eaf5ff;
+      box-shadow:0 8px 18px rgba(31,102,194,.14);
+      font-size:.92em;
+      line-height:1;
+    }
+
+    .blank.filled.correct{
+      color:var(--green);
+      background:var(--green-bg);
+      outline:4px solid rgba(31,157,85,.18);
+    }
+
+    .blank.filled.wrong{
+      color:var(--red);
+      background:var(--red-bg);
+      outline:4px solid rgba(217,48,37,.16);
+    }
+
+    .hint{
+      margin:0 auto 26px;
+      max-width:610px;
+      color:#52627a;
+      font-size:18px;
+      line-height:1.45;
+    }
+
+    .choices{
+      display:flex;
+      gap:18px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin:24px 0 18px;
+    }
+
+    .choice-btn{
+      width:min(210px, 44vw);
+      min-height:86px;
+      border-radius:22px;
+      background:linear-gradient(180deg,#ffffff,#eef7ff);
+      border:3px solid rgba(45,125,224,.35);
+      color:var(--blue-800);
+      font-size:34px;
+      font-weight:1000;
+      box-shadow:0 12px 22px rgba(31,102,194,.12);
+    }
+    .choice-btn:hover:not(:disabled){transform:translateY(-3px);border-color:var(--blue-600)}
+    .choice-btn:disabled{cursor:not-allowed;opacity:.72}
+
+    .feedback{
+      min-height:74px;
+      border-radius:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      font-weight:1000;
+      margin:20px auto 0;
+      max-width:560px;
+      opacity:0;
+      transform:translateY(6px);
+      transition:.2s ease;
+      padding:12px 18px;
+    }
+    .feedback.show{opacity:1;transform:translateY(0)}
+    .feedback.correct{background:var(--green-bg);color:var(--green);border:2px solid rgba(31,157,85,.25)}
+    .feedback.wrong{background:var(--red-bg);color:var(--red);border:2px solid rgba(217,48,37,.24)}
+
+    .next-row{
+      margin-top:22px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .next-row.hidden{display:none}
+
+    .explain{
+      margin-top:10px;
+      color:#52627a;
+      font-size:16px;
+      font-weight:700;
+    }
+
+    .finish-card{
+      background:white;
+      border-radius:28px;
+      padding:40px;
+      text-align:center;
+      box-shadow:0 16px 35px rgba(31,102,194,.12);
+      border:1px solid rgba(31,102,194,.12);
+    }
+    .finish-title{
+      color:var(--blue-900);
+      font-size:clamp(30px, 5vw, 52px);
+      margin:0 0 10px;
+      letter-spacing:-.04em;
+    }
+    .score{
+      font-size:24px;
+      color:var(--blue-800);
+      font-weight:900;
+      margin:12px 0 28px;
+    }
+
+    @media (max-width:720px){
+      body{padding:12px;align-items:flex-start}
+      .app{min-height:calc(100vh - 24px);border-radius:24px}
+      header{padding:24px 20px}
+      main{padding:22px 16px}
+      .rule-grid{grid-template-columns:1fr;gap:12px}
+      .topline{align-items:stretch;flex-direction:column}
+      .task-card{padding:26px 16px}
+      .phrase{font-size:38px}
+      .blank{min-width:74px;border-bottom-width:6px}
+      .choice-btn{width:100%;min-height:76px}
+      .choices{gap:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="decor one"></div>
+    <div class="decor two"></div>
+    <div class="decor three"></div>
+
+    <header>
+      <div class="badge">🎯 Цифровой тренажёр</div>
+      <h1>Правописание -ТСЯ и -ТЬСЯ</h1>
+      <p class="subtitle">Тренируемся быстро определять, нужен ли мягкий знак в глаголе перед -ся.</p>
+    </header>
+
+    <main>
+      <section id="startScreen" class="screen active">
+        <div class="rule-grid">
+          <div class="rule-card">
+            <strong>Пишем ТЬСЯ</strong>
+            <p>Если к глаголу можно задать вопрос <b>что делать?</b> или <b>что сделать?</b></p>
+            <div class="example">улыбаться, встретиться</div>
+          </div>
+          <div class="rule-card">
+            <strong>Пишем ТСЯ</strong>
+            <p>Если к глаголу можно задать вопрос <b>что делает?</b>, <b>что сделает?</b>, <b>что делают?</b></p>
+            <div class="example">улыбается, встретятся</div>
+          </div>
+        </div>
+
+        <div class="start-note">
+          <b>Как играть:</b> на экране появится слово с пропуском. Нажми <b>ТЬ</b> или <b>Т</b> — выбранная часть сразу появится в пропуске. Если ответ верный — появится зелёный цвет и кнопка перехода дальше. Если ошибка — появится красный цвет и подсказка.
+        </div>
+
+        <button class="primary-btn" id="startBtn">Начать игру →</button>
+      </section>
+
+      <section id="gameScreen" class="screen">
+        <div class="topline">
+          <div class="progress-wrap">
+            <div class="progress-text">
+              <span id="counter">Задание 1 из 50</span>
+              <span id="scoreText">Верно: 0</span>
+            </div>
+            <div class="bar"><span id="barFill"></span></div>
+          </div>
+          <button class="small-btn" id="shuffleBtn">Перемешать</button>
+        </div>
+
+        <div class="task-card">
+          <div class="task-label">Выбери пропущенную часть</div>
+          <div class="phrase" id="phrase"></div>
+          <p class="hint">Мысленно задай вопрос к глаголу: <b>что делать?</b> или <b>что делает?</b></p>
+
+          <div class="choices">
+            <button class="choice-btn" data-choice="ТЬ">ТЬ</button>
+            <button class="choice-btn" data-choice="Т">Т</button>
+          </div>
+
+          <div id="feedback" class="feedback"></div>
+          <div class="next-row hidden" id="nextRow">
+            <button class="primary-btn" id="nextBtn">Следующее задание →</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="finishScreen" class="screen">
+        <div class="finish-card">
+          <h2 class="finish-title">Тренажёр пройден!</h2>
+          <div class="score" id="finalScore"></div>
+          <p class="hint">Главное правило: в вопросе есть мягкий знак — в глаголе тоже пишем мягкий знак.</p>
+          <button class="primary-btn" id="restartBtn">Пройти ещё раз</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const originalTasks = [
+      {text:"Радостно улыба__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Малыш улыбае__ся", answer:"Т", question:"что делает?"},
+      {text:"Дождь начинае__ся", answer:"Т", question:"что делает?"},
+      {text:"Урок скоро кончи__ся", answer:"Т", question:"что сделает?"},
+      {text:"Пришлось извиня__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Мальчик извиняе__ся", answer:"Т", question:"что делает?"},
+      {text:"Ребёнок бои__ся", answer:"Т", question:"что делает?"},
+      {text:"Не надо боя__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Солнце сади__ся", answer:"Т", question:"что делает?"},
+      {text:"Стали спуска__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Легко спускае__ся", answer:"Т", question:"что делает?"},
+      {text:"Дым поднимае__ся", answer:"Т", question:"что делает?"},
+      {text:"Трудно поднима__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Собака кусае__ся", answer:"Т", question:"что делает?"},
+      {text:"Опасно куса__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Окно разобьё__ся", answer:"Т", question:"что сделает?"},
+      {text:"Боюсь разби__ся", answer:"ТЬ", question:"что сделать?"},
+      {text:"Туман стеле__ся", answer:"Т", question:"что делает?"},
+      {text:"Звёзды светя__ся", answer:"Т", question:"что делают?"},
+      {text:"Будем труди__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Папа усердно труди__ся", answer:"Т", question:"что делает?"},
+      {text:"Дети балую__ся", answer:"Т", question:"что делают?"},
+      {text:"Запретил балова__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Кошка ласти__ся", answer:"Т", question:"что делает?"},
+      {text:"Брат снова лени__ся", answer:"Т", question:"что делает?"},
+      {text:"Перестань лени__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Она очень надее__ся", answer:"Т", question:"что делает?"},
+      {text:"Остаётся надея__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Друзья скоро встретя__ся", answer:"Т", question:"что сделают?"},
+      {text:"Рады снова встрети__ся", answer:"ТЬ", question:"что сделать?"},
+      {text:"Птицы возвращаю__ся", answer:"Т", question:"что делают?"},
+      {text:"Пора возвраща__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Хочется звонко смея__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Весь зал смее__ся", answer:"Т", question:"что делает?"},
+      {text:"Снег красиво искри__ся", answer:"Т", question:"что делает?"},
+      {text:"Вода быстро льё__ся", answer:"Т", question:"что делает?"},
+      {text:"Хитрый враг пряче__ся", answer:"Т", question:"что делает?"},
+      {text:"Привык ловко прята__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Тонкий лёд ломае__ся", answer:"Т", question:"что делает?"},
+      {text:"Дерево сильно гнё__ся", answer:"Т", question:"что делает?"},
+      {text:"Листья медленно кружат__ся", answer:"Т", question:"что делают?"},
+      {text:"Ветер к вечеру усиливае__ся", answer:"Т", question:"что делает?"},
+      {text:"Волны громко бью__ся", answer:"Т", question:"что делают?"},
+      {text:"Надо хорошо готови__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Ученик усердно готови__ся", answer:"Т", question:"что делает?"},
+      {text:"В руках дело спори__ся", answer:"Т", question:"что делает?"},
+      {text:"Надо быстро торопи__ся", answer:"ТЬ", question:"что делать?"},
+      {text:"Дедушка куда-то торопи__ся", answer:"Т", question:"что делает?"},
+      {text:"В лесу легко дыши__ся", answer:"Т", question:"что делает?"},
+      {text:"Это знание точно пригоди__ся", answer:"Т", question:"что сделает?"}
+    ];
+
+    let tasks = [];
+    let index = 0;
+    let score = 0;
+    let answered = false;
+
+    const startScreen = document.getElementById('startScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const finishScreen = document.getElementById('finishScreen');
+    const phraseEl = document.getElementById('phrase');
+    const counterEl = document.getElementById('counter');
+    const scoreText = document.getElementById('scoreText');
+    const barFill = document.getElementById('barFill');
+    const feedback = document.getElementById('feedback');
+    const nextRow = document.getElementById('nextRow');
+    const finalScore = document.getElementById('finalScore');
+    const choiceButtons = document.querySelectorAll('.choice-btn');
+
+    function shuffle(array){
+      const arr = [...array];
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function showScreen(screen){
+      [startScreen, gameScreen, finishScreen].forEach(s => s.classList.remove('active'));
+      screen.classList.add('active');
+    }
+
+    function renderPhrase(text){
+      return text.replace('__', '<span class="blank" id="answerBlank" aria-live="polite"></span>');
+    }
+
+    function startGame(){
+      tasks = shuffle(originalTasks);
+      index = 0;
+      score = 0;
+      answered = false;
+      showScreen(gameScreen);
+      renderTask();
+    }
+
+    function renderTask(){
+      const task = tasks[index];
+      answered = false;
+      phraseEl.innerHTML = renderPhrase(task.text);
+      counterEl.textContent = `Задание ${index + 1} из ${tasks.length}`;
+      scoreText.textContent = `Верно: ${score}`;
+      barFill.style.width = `${(index / tasks.length) * 100}%`;
+      feedback.className = 'feedback';
+      feedback.innerHTML = '';
+      nextRow.classList.add('hidden');
+      choiceButtons.forEach(btn => {
+        btn.disabled = false;
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      });
+    }
+
+    function choose(choice){
+      if(answered) return;
+      answered = true;
+      const task = tasks[index];
+      const isCorrect = choice === task.answer;
+      const blank = document.getElementById('answerBlank');
+      // Выбранная часть сразу вставляется прямо в пропуск слова
+      blank.textContent = choice;
+      blank.classList.add('filled', isCorrect ? 'correct' : 'wrong');
+      blank.setAttribute('title', isCorrect ? 'Выбрано верно' : 'Выбрано неверно');
+
+      choiceButtons.forEach(btn => {
+        btn.disabled = true;
+        if(btn.dataset.choice === task.answer){
+          btn.style.background = 'linear-gradient(180deg,#e9f8ef,#ffffff)';
+          btn.style.color = 'var(--green)';
+          btn.style.borderColor = 'rgba(31,157,85,.55)';
+        }
+      });
+
+      if(isCorrect){
+        score++;
+        feedback.className = 'feedback correct show';
+        feedback.innerHTML = `Верно! <span class="explain">&nbsp;Вопрос: ${task.question}</span>`;
+      } else {
+        feedback.className = 'feedback wrong show';
+        feedback.innerHTML = `Допущена ошибка <span class="explain">&nbsp;Правильно: ${task.answer}. Вопрос: ${task.question}</span>`;
+      }
+
+      scoreText.textContent = `Верно: ${score}`;
+      nextRow.classList.remove('hidden');
+    }
+
+    function nextTask(){
+      index++;
+      if(index >= tasks.length){
+        barFill.style.width = '100%';
+        finalScore.textContent = `Результат: ${score} из ${tasks.length}`;
+        showScreen(finishScreen);
+      } else {
+        renderTask();
+      }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    document.getElementById('restartBtn').addEventListener('click', startGame);
+    document.getElementById('nextBtn').addEventListener('click', nextTask);
+    document.getElementById('shuffleBtn').addEventListener('click', startGame);
+    choiceButtons.forEach(btn => btn.addEventListener('click', () => choose(btn.dataset.choice)));
+  </script>
+</body>
+</html>
